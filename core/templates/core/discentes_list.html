@@ -1,0 +1,115 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Discentes - PAS Gateway{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>👨‍🎓 Consultar Discente</h2>
+    <p style="color: #6c757d; margin-bottom: 20px;">
+        Digite o ID do discente para buscar informações no microsserviço externo.
+    </p>
+    
+    <form method="post" style="display: flex; gap: 10px; align-items: end;">
+        {% csrf_token %}
+        <div class="form-group" style="flex: 1; margin: 0;">
+            <label for="discente_id">ID do Discente:</label>
+            <input type="number" id="discente_id" name="discente_id" 
+                   placeholder="Ex: 1" required>
+        </div>
+        <button type="submit" class="btn">🔍 Buscar</button>
+    </form>
+</div>
+
+{% if discente_buscado %}
+<div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+    <h3 style="color: white;">📋 Informações do Discente</h3>
+    <table style="box-shadow: none;">
+        <tbody>
+            <tr style="background: rgba(255,255,255,0.1);">
+                <td style="color: white; font-weight: bold; border-color: rgba(255,255,255,0.2);">ID</td>
+                <td style="color: white; border-color: rgba(255,255,255,0.2);">{{ discente_buscado.id }}</td>
+            </tr>
+            <tr style="background: rgba(255,255,255,0.05);">
+                <td style="color: white; font-weight: bold; border-color: rgba(255,255,255,0.2);">Nome</td>
+                <td style="color: white; border-color: rgba(255,255,255,0.2);">{{ discente_buscado.nome }}</td>
+            </tr>
+            <tr style="background: rgba(255,255,255,0.1);">
+                <td style="color: white; font-weight: bold; border-color: rgba(255,255,255,0.2);">Curso</td>
+                <td style="color: white; border-color: rgba(255,255,255,0.2);">{{ discente_buscado.curso }}</td>
+            </tr>
+            <tr style="background: rgba(255,255,255,0.05);">
+                <td style="color: white; font-weight: bold; border-color: rgba(255,255,255,0.2);">Modalidade</td>
+                <td style="color: white; border-color: rgba(255,255,255,0.2);">{{ discente_buscado.modalidade }}</td>
+            </tr>
+            <tr style="background: rgba(255,255,255,0.1);">
+                <td style="color: white; font-weight: bold; border-color: none;">Status Acadêmico</td>
+                <td style="color: white; border: none;">
+                    {% if discente_buscado.status_academico|lower == "ativo" %}
+                        <span class="badge badge-success">✅ {{ discente_buscado.status_academico }}</span>
+                    {% else %}
+                        <span class="badge badge-danger">❌ {{ discente_buscado.status_academico }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div style="margin-top: 20px;">
+        <a href="{% url 'core:discente_detail' discente_buscado.id %}" 
+           class="btn btn-secondary">
+            📊 Ver Detalhes Completos
+        </a>
+    </div>
+</div>
+{% endif %}
+
+{% if discentes %}
+<div class="card">
+    <h3>📚 Discentes Sincronizados Localmente</h3>
+    <p style="color: #6c757d; margin-bottom: 20px;">
+        {{ discentes.count }} discente(s) já consultado(s) e armazenado(s) localmente.
+    </p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Curso</th>
+                <th>Modalidade</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for discente in discentes %}
+            <tr>
+                <td><strong>{{ discente.id }}</strong></td>
+                <td>{{ discente.nome }}</td>
+                <td>{{ discente.curso }}</td>
+                <td>{{ discente.modalidade }}</td>
+                <td>
+                    {% if discente.status_academico|lower == "ativo" %}
+                        <span class="badge badge-success">{{ discente.status_academico }}</span>
+                    {% else %}
+                        <span class="badge badge-danger">{{ discente.status_academico }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'core:discente_detail' discente.id %}" 
+                       class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.9em;">
+                        Ver Detalhes
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <p style="font-size: 1.2em;">Nenhum discente sincronizado ainda.</p>
+    <p>Use o formulário acima para buscar um discente pelo ID.</p>
+</div>
+{% endif %}
+{% endblock %}

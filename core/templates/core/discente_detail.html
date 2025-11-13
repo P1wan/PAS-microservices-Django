@@ -1,0 +1,185 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ discente.nome }} - PAS Gateway{% endblock %}
+
+{% block content %}
+<div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+    <h2 style="color: white;">👨‍🎓 {{ discente.nome }}</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+        <div>
+            <strong style="opacity: 0.8;">ID:</strong>
+            <p style="font-size: 1.2em; margin-top: 5px;">{{ discente.id }}</p>
+        </div>
+        <div>
+            <strong style="opacity: 0.8;">Curso:</strong>
+            <p style="font-size: 1.2em; margin-top: 5px;">{{ discente.curso }}</p>
+        </div>
+        <div>
+            <strong style="opacity: 0.8;">Modalidade:</strong>
+            <p style="font-size: 1.2em; margin-top: 5px;">{{ discente.modalidade }}</p>
+        </div>
+        <div>
+            <strong style="opacity: 0.8;">Status:</strong>
+            <p style="font-size: 1.2em; margin-top: 5px;">
+                {% if discente.status_academico|lower == "ativo" %}
+                    ✅ {{ discente.status_academico }}
+                {% else %}
+                    ❌ {{ discente.status_academico }}
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div class="card">
+        <h3>📚 Simular Matrícula</h3>
+        <form method="post" action="{% url 'core:matricular' %}">
+            {% csrf_token %}
+            <input type="hidden" name="discente_id" value="{{ discente.id }}">
+            <div class="form-group">
+                <label for="disciplina_id">ID da Disciplina:</label>
+                <input type="number" id="disciplina_id" name="disciplina_id" 
+                       placeholder="Ex: 1" required>
+            </div>
+            <button type="submit" class="btn btn-success" style="width: 100%;">
+                ✅ Matricular
+            </button>
+        </form>
+        <p style="color: #6c757d; font-size: 0.9em; margin-top: 10px;">
+            💡 Dica: <a href="{% url 'core:disciplinas_list' %}" style="color: #667eea;">
+                Ver lista de disciplinas
+            </a>
+        </p>
+    </div>
+    
+    <div class="card">
+        <h3>📖 Reservar Livro</h3>
+        <form method="post" action="{% url 'core:reservar_livro' %}">
+            {% csrf_token %}
+            <input type="hidden" name="discente_id" value="{{ discente.id }}">
+            <div class="form-group">
+                <label for="livro_id">ID do Livro:</label>
+                <input type="number" id="livro_id" name="livro_id" 
+                       placeholder="Ex: 1" required>
+            </div>
+            <button type="submit" class="btn btn-success" style="width: 100%;">
+                📚 Reservar
+            </button>
+        </form>
+        <p style="color: #6c757d; font-size: 0.9em; margin-top: 10px;">
+            💡 Dica: <a href="{% url 'core:livros_list' %}" style="color: #667eea;">
+                Ver acervo disponível
+            </a>
+        </p>
+    </div>
+</div>
+
+{% if matriculas %}
+<div class="card">
+    <h3>📋 Matrículas Ativas ({{ matriculas.count }}/5)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID Disciplina</th>
+                <th>Nome</th>
+                <th>Curso</th>
+                <th>Vagas</th>
+                <th>Data</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for matricula in matriculas %}
+            <tr>
+                <td><strong>{{ matricula.disciplina.id }}</strong></td>
+                <td>{{ matricula.disciplina.nome }}</td>
+                <td>{{ matricula.disciplina.curso }}</td>
+                <td>{{ matricula.disciplina.vagas }}</td>
+                <td>{{ matricula.timestamp|date:"d/m/Y H:i" }}</td>
+                <td>
+                    <form method="post" action="{% url 'core:cancelar_matricula' %}" 
+                          style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="discente_id" value="{{ discente.id }}">
+                        <input type="hidden" name="disciplina_id" value="{{ matricula.disciplina.id }}">
+                        <button type="submit" class="btn btn-danger" 
+                                style="padding: 6px 12px; font-size: 0.9em;"
+                                onclick="return confirm('Deseja cancelar esta matrícula?')">
+                            ❌ Cancelar
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="card" style="background: #f8f9fa; text-align: center; padding: 40px;">
+    <p style="color: #6c757d; font-size: 1.1em;">
+        📚 Nenhuma matrícula ativa no momento.
+    </p>
+    <p style="color: #6c757d;">
+        Use o formulário acima para matricular em uma disciplina.
+    </p>
+</div>
+{% endif %}
+
+{% if reservas %}
+<div class="card">
+    <h3>📚 Reservas Ativas ({{ reservas.count }})</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID Livro</th>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Ano</th>
+                <th>Data</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reserva in reservas %}
+            <tr>
+                <td><strong>{{ reserva.livro.id }}</strong></td>
+                <td>{{ reserva.livro.titulo }}</td>
+                <td>{{ reserva.livro.autor }}</td>
+                <td>{{ reserva.livro.ano }}</td>
+                <td>{{ reserva.timestamp|date:"d/m/Y H:i" }}</td>
+                <td>
+                    <form method="post" action="{% url 'core:cancelar_reserva' %}" 
+                          style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="discente_id" value="{{ discente.id }}">
+                        <input type="hidden" name="livro_id" value="{{ reserva.livro.id }}">
+                        <button type="submit" class="btn btn-danger" 
+                                style="padding: 6px 12px; font-size: 0.9em;"
+                                onclick="return confirm('Deseja cancelar esta reserva?')">
+                            ❌ Cancelar
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="card" style="background: #f8f9fa; text-align: center; padding: 40px;">
+    <p style="color: #6c757d; font-size: 1.1em;">
+        📖 Nenhuma reserva ativa no momento.
+    </p>
+    <p style="color: #6c757d;">
+        Use o formulário acima para reservar um livro.
+    </p>
+</div>
+{% endif %}
+
+<div style="margin-top: 20px;">
+    <a href="{% url 'core:discentes_list' %}" class="btn btn-secondary">
+        ← Voltar para Lista de Discentes
+    </a>
+</div>
+{% endblock %}

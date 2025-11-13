@@ -1,0 +1,86 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Biblioteca - PAS Gateway{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>📖 Acervo da Biblioteca</h2>
+    <p style="color: #6c757d; margin-bottom: 20px;">
+        Lista de livros sincronizados do microsserviço externo.
+    </p>
+    
+    <form method="get" style="display: flex; gap: 10px; align-items: end;">
+        <div class="form-group" style="flex: 1; margin: 0;">
+            <label for="status">Filtrar por Status:</label>
+            <select id="status" name="status">
+                <option value="">-- Todos os Status --</option>
+                <option value="disponível" {% if status_filtro == "disponível" %}selected{% endif %}>
+                    Disponível
+                </option>
+                <option value="indisponível" {% if status_filtro == "indisponível" %}selected{% endif %}>
+                    Indisponível
+                </option>
+            </select>
+        </div>
+        <button type="submit" class="btn">🔍 Filtrar</button>
+        {% if status_filtro %}
+        <a href="{% url 'core:livros_list' %}" class="btn btn-secondary">
+            ❌ Limpar Filtro
+        </a>
+        {% endif %}
+    </form>
+</div>
+
+{% if livros %}
+<div class="card">
+    <h3>📚 Total: {{ livros|length }} livro(s)</h3>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Ano</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for livro in livros %}
+            <tr>
+                <td><strong>{{ livro.id }}</strong></td>
+                <td>{{ livro.titulo }}</td>
+                <td>{{ livro.autor }}</td>
+                <td>{{ livro.ano }}</td>
+                <td>
+                    {% if livro.status|lower == "disponível" %}
+                        <span class="badge badge-success">✅ {{ livro.status }}</span>
+                    {% else %}
+                        <span class="badge badge-danger">❌ {{ livro.status }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card" style="background: #f8f9fa;">
+    <h3>💡 Informações</h3>
+    <ul style="line-height: 2; color: #495057;">
+        <li>Os livros são sincronizados do microsserviço externo <code>biblioteca</code></li>
+        <li>Para reservar um livro, acesse a página de detalhes do discente</li>
+        <li>Apenas livros com status <strong>"Disponível"</strong> podem ser reservados</li>
+        <li>As reservas são simulações locais e não afetam o microsserviço externo</li>
+    </ul>
+</div>
+{% else %}
+<div class="empty-state">
+    <p style="font-size: 1.2em;">⚠️ Nenhum livro encontrado.</p>
+    <p>Tente sincronizar os dados novamente.</p>
+    <a href="{% url 'core:sincronizar_dados' %}" class="btn" style="margin-top: 20px;">
+        🔄 Sincronizar Dados
+    </a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Início - PAS Gateway{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Bem-vindo ao PAS Gateway</h2>
+    <p style="color: #6c757d; margin-bottom: 20px;">
+        Sistema monolítico que funciona como fachada/API Gateway para três microsserviços 
+        acadêmicos (Discente, Disciplina e Biblioteca).
+    </p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 20px 0;">
+    <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <h3 style="color: white;">👨‍🎓 Consultar Discente</h3>
+        <p style="opacity: 0.9; margin-bottom: 20px;">
+            Busque informações de discentes pelo ID
+        </p>
+        <form method="post" action="{% url 'core:discentes_list' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="number" name="discente_id" placeholder="ID do Discente" 
+                       required style="background: white;">
+            </div>
+            <button type="submit" class="btn btn-secondary" style="width: 100%;">
+                🔍 Buscar Discente
+            </button>
+        </form>
+    </div>
+    
+    <div class="card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+        <h3 style="color: white;">📚 Simular Matrícula</h3>
+        <p style="opacity: 0.9; margin-bottom: 20px;">
+            Matricule um discente em uma disciplina
+        </p>
+        <form method="post" action="{% url 'core:matricular' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="number" name="discente_id" placeholder="ID do Discente" 
+                       required style="background: white;">
+            </div>
+            <div class="form-group">
+                <input type="number" name="disciplina_id" placeholder="ID da Disciplina" 
+                       required style="background: white;">
+            </div>
+            <button type="submit" class="btn btn-success" style="width: 100%;">
+                ✅ Matricular
+            </button>
+        </form>
+    </div>
+    
+    <div class="card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+        <h3 style="color: white;">📖 Reservar Livro</h3>
+        <p style="opacity: 0.9; margin-bottom: 20px;">
+            Reserve um livro do acervo
+        </p>
+        <form method="post" action="{% url 'core:reservar_livro' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="number" name="discente_id" placeholder="ID do Discente" 
+                       required style="background: white;">
+            </div>
+            <div class="form-group">
+                <input type="number" name="livro_id" placeholder="ID do Livro" 
+                       required style="background: white;">
+            </div>
+            <button type="submit" class="btn btn-success" style="width: 100%;">
+                📚 Reservar
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <h3>📋 Funcionalidades Disponíveis</h3>
+    <ul style="line-height: 2; color: #495057;">
+        <li><strong>Consulta de Dados:</strong> Visualize discentes, disciplinas e livros dos microsserviços externos</li>
+        <li><strong>Simulação de Matrícula:</strong> Matricule discentes em disciplinas (máximo 5 simultâneas)</li>
+        <li><strong>Simulação de Reserva:</strong> Reserve livros disponíveis do acervo</li>
+        <li><strong>Cancelamentos:</strong> Cancele matrículas e reservas simuladas</li>
+        <li><strong>Validações:</strong> Todas as regras de negócio são validadas automaticamente</li>
+    </ul>
+</div>
+
+<div class="card" style="background: #f8f9fa;">
+    <h3>⚙️ Arquitetura do Sistema</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
+        <div style="background: white; padding: 15px; border-radius: 6px; border-left: 4px solid #667eea;">
+            <strong>Model</strong>
+            <p style="color: #6c757d; font-size: 0.9em; margin-top: 5px;">
+                Discente, Disciplina, Livro, MatriculaSimulada, ReservaSimulada
+            </p>
+        </div>
+        <div style="background: white; padding: 15px; border-radius: 6px; border-left: 4px solid #764ba2;">
+            <strong>View (Controller)</strong>
+            <p style="color: #6c757d; font-size: 0.9em; margin-top: 5px;">
+                Coordena requisições e delega para Services
+            </p>
+        </div>
+        <div style="background: white; padding: 15px; border-radius: 6px; border-left: 4px solid #f093fb;">
+            <strong>Template (View)</strong>
+            <p style="color: #6c757d; font-size: 0.9em; margin-top: 5px;">
+                Apresentação HTML/CSS para o usuário
+            </p>
+        </div>
+        <div style="background: white; padding: 15px; border-radius: 6px; border-left: 4px solid #4facfe;">
+            <strong>Services</strong>
+            <p style="color: #6c757d; font-size: 0.9em; margin-top: 5px;">
+                Regras de negócio (Enrollment, Reservation, Lookup)
+            </p>
+        </div>
+        <div style="background: white; padding: 15px; border-radius: 6px; border-left: 4px solid #00f2fe;">
+            <strong>Gateways</strong>
+            <p style="color: #6c757d; font-size: 0.9em; margin-top: 5px;">
+                Integração HTTP com microsserviços externos (AWS)
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🔗 Microsserviços Integrados</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Serviço</th>
+                <th>Domínio</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>msAluno</strong></td>
+                <td>Discentes</td>
+                <td><span class="badge badge-success">Ativo</span></td>
+            </tr>
+            <tr>
+                <td><strong>msDisciplina</strong></td>
+                <td>Disciplinas</td>
+                <td><span class="badge badge-success">Ativo</span></td>
+            </tr>
+            <tr>
+                <td><strong>biblioteca</strong></td>
+                <td>Acervo de Livros</td>
+                <td><span class="badge badge-success">Ativo</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

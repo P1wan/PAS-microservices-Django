@@ -1,0 +1,88 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Disciplinas - PAS Gateway{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>📚 Disciplinas Oferecidas</h2>
+    <p style="color: #6c757d; margin-bottom: 20px;">
+        Lista de disciplinas sincronizadas do microsserviço externo.
+    </p>
+    
+    {% if cursos %}
+    <form method="get" style="display: flex; gap: 10px; align-items: end;">
+        <div class="form-group" style="flex: 1; margin: 0;">
+            <label for="curso">Filtrar por Curso:</label>
+            <select id="curso" name="curso">
+                <option value="">-- Todos os Cursos --</option>
+                {% for curso in cursos %}
+                <option value="{{ curso }}" {% if curso == curso_filtro %}selected{% endif %}>
+                    {{ curso }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn">🔍 Filtrar</button>
+        {% if curso_filtro %}
+        <a href="{% url 'core:disciplinas_list' %}" class="btn btn-secondary">
+            ❌ Limpar Filtro
+        </a>
+        {% endif %}
+    </form>
+    {% endif %}
+</div>
+
+{% if disciplinas %}
+<div class="card">
+    <h3>📋 Total: {{ disciplinas|length }} disciplina(s)</h3>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Curso</th>
+                <th>Vagas</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for disciplina in disciplinas %}
+            <tr>
+                <td><strong>{{ disciplina.id }}</strong></td>
+                <td>{{ disciplina.nome }}</td>
+                <td>{{ disciplina.curso }}</td>
+                <td><strong>{{ disciplina.vagas }}</strong></td>
+                <td>
+                    {% if disciplina.vagas > 0 %}
+                        <span class="badge badge-success">✅ Disponível</span>
+                    {% else %}
+                        <span class="badge badge-danger">❌ Sem Vagas</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card" style="background: #f8f9fa;">
+    <h3>💡 Informações</h3>
+    <ul style="line-height: 2; color: #495057;">
+        <li>As disciplinas são sincronizadas do microsserviço externo <code>msDisciplina</code></li>
+        <li>Para matricular um discente, acesse a página de detalhes do discente</li>
+        <li>Um discente pode ter no máximo <strong>5 disciplinas ativas</strong> simultaneamente</li>
+        <li>Disciplinas só podem ser cursadas por discentes do mesmo curso</li>
+        <li>Disciplinas sem vagas não permitem novas matrículas</li>
+    </ul>
+</div>
+{% else %}
+<div class="empty-state">
+    <p style="font-size: 1.2em;">⚠️ Nenhuma disciplina encontrada.</p>
+    <p>Tente sincronizar os dados novamente.</p>
+    <a href="{% url 'core:sincronizar_dados' %}" class="btn" style="margin-top: 20px;">
+        🔄 Sincronizar Dados
+    </a>
+</div>
+{% endif %}
+{% endblock %}
