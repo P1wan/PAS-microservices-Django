@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleção de Estudante - SISGAP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .search-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .search-section h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(42, 82, 152, 0.4);
+        }
+
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .student-card {
+            background: white;
+            border: 2px solid #e0e6ed;
+            border-radius: 10px;
+            padding: 25px;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            color: inherit;
+        }
+
+        .student-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-color: #2a5298;
+        }
+
+        .student-id {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #495057;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .student-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .student-info {
+            font-size: 0.9em;
+            color: #6c757d;
+            line-height: 1.6;
+        }
+
+        .student-info p {
+            margin: 5px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+            fill: currentColor;
+        }
+
+        .pagination {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .pagination-info {
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+
+        .messages {
+            margin-bottom: 30px;
+        }
+
+        .message {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .search-form {
+                flex-direction: column;
+            }
+
+            .students-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Selecionar Estudante</h1>
+            <a href="{% url 'core:portal' %}" class="btn-back">Voltar ao Portal</a>
+        </div>
+
+        <div class="content">
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="message {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="search-section">
+                <h2>Buscar Estudante</h2>
+                <form method="get" class="search-form">
+                    <div class="form-group">
+                        <label for="search">Buscar por nome ou ID</label>
+                        <input type="text" id="search" name="q" value="{{ request.GET.q }}" placeholder="Digite o nome ou ID do estudante">
+                    </div>
+                    <div class="form-group">
+                        <label for="curso">Filtrar por curso</label>
+                        <select id="curso" name="curso">
+                            <option value="">Todos os cursos</option>
+                            {% for curso in cursos %}
+                                <option value="{{ curso }}" {% if request.GET.curso == curso %}selected{% endif %}>{{ curso }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                </form>
+            </div>
+
+            {% if discentes %}
+                <div class="students-grid">
+                    {% for discente in discentes %}
+                        <a href="{% url 'core:student_dashboard' discente.id %}" class="student-card">
+                            <span class="student-id">ID: {{ discente.id }}</span>
+                            <div class="student-name">{{ discente.nome }}</div>
+                            <div class="student-info">
+                                <p><strong>Curso:</strong> {{ discente.curso }}</p>
+                                <p><strong>Modalidade:</strong> {{ discente.modalidade }}</p>
+                                {% if discente.status_academico == "Ativo" %}
+                                    <span class="badge badge-success">{{ discente.status_academico }}</span>
+                                {% elif discente.status_academico == "Trancado" %}
+                                    <span class="badge badge-warning">{{ discente.status_academico }}</span>
+                                {% else %}
+                                    <span class="badge badge-danger">{{ discente.status_academico }}</span>
+                                {% endif %}
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+
+                {% if discentes|length > 20 %}
+                    <div class="pagination">
+                        <p class="pagination-info">Exibindo {{ discentes|length }} estudante(s)</p>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="empty-state">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 12C14.21 12 16 10.21 16 8S14.21 4 12 4 8 5.79 8 8 9.79 12 12 12M12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/>
+                    </svg>
+                    <h3>Nenhum estudante encontrado</h3>
+                    <p>Tente ajustar os filtros de busca ou verifique se o sistema foi inicializado.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
