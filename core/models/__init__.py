@@ -2,6 +2,7 @@
 
 from .academic import Discente, Disciplina, Livro
 from .simulation import MatriculaSimulada, ReservaSimulada
+from .enrollment import Matricula, MatriculaDisciplina, ReservaLivro
 
 __all__ = [
     "Discente",
@@ -9,4 +10,7 @@ __all__ = [
     "Livro",
     "MatriculaSimulada",
     "ReservaSimulada",
+    "Matricula",
+    "MatriculaDisciplina",
+    "ReservaLivro",
 ]
