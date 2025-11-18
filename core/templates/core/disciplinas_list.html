@@ -4,7 +4,12 @@
 
 {% block content %}
 <div class="card">
-    <h2>📚 Disciplinas Oferecidas</h2>
+    <h2>
+        📚 Disciplinas Oferecidas
+        <a href="{% url 'core:sincronizar_dados' %}" class="btn btn-secondary btn-sm" style="float: right;">
+            🔄 Atualizar Dados
+        </a>
+    </h2>
     <p style="color: #6c757d; margin-bottom: 20px;">
         Lista de disciplinas sincronizadas do microsserviço externo.
     </p>

@@ -83,22 +83,22 @@ def discente_detail(request, discente_id):
 
 def disciplinas_list(request):
     """Lista todas as disciplinas disponíveis."""
-    # Sincroniza disciplinas do serviço externo
-    disciplinas = LookupService.sincronizar_disciplinas()
+    disciplinas_qs = Disciplina.objects.all().order_by('nome')
     
-    if not disciplinas:
-        messages.warning(request, "Não foi possível carregar disciplinas do serviço externo.")
+    if not disciplinas_qs.exists():
+        disciplinas_sync = LookupService.sincronizar_disciplinas()
+        if not disciplinas_sync:
+            messages.warning(request, "Não foi possível carregar disciplinas do serviço externo.")
+        disciplinas_qs = Disciplina.objects.all().order_by('nome')
     
-    # Filtro opcional por curso
     curso_filtro = request.GET.get('curso')
     if curso_filtro:
-        disciplinas = [d for d in disciplinas if d.curso.lower() == curso_filtro.lower()]
+        disciplinas_qs = disciplinas_qs.filter(curso__iexact=curso_filtro)
     
-    # Lista de cursos únicos para o filtro
     cursos = sorted(set(d.curso for d in Disciplina.objects.all()))
     
     return render(request, 'core/disciplinas_list.html', {
-        'disciplinas': disciplinas,
+        'disciplinas': list(disciplinas_qs),
         'cursos': cursos,
         'curso_filtro': curso_filtro,
     })
@@ -106,19 +106,20 @@ def disciplinas_list(request):
 
 def livros_list(request):
     """Lista todos os livros do acervo."""
-    # Sincroniza livros do serviço externo
-    livros = LookupService.sincronizar_livros()
+    livros_qs = Livro.objects.all().order_by('titulo')
     
-    if not livros:
-        messages.warning(request, "Não foi possível carregar livros do serviço externo.")
+    if not livros_qs.exists():
+        livros_sync = LookupService.sincronizar_livros()
+        if not livros_sync:
+            messages.warning(request, "Não foi possível carregar livros do serviço externo.")
+        livros_qs = Livro.objects.all().order_by('titulo')
     
-    # Filtro opcional por status
     status_filtro = request.GET.get('status')
     if status_filtro:
-        livros = [l for l in livros if l.status.lower() == status_filtro.lower()]
+        livros_qs = livros_qs.filter(status__iexact=status_filtro)
     
     return render(request, 'core/livros_list.html', {
-        'livros': livros,
+        'livros': list(livros_qs),
         'status_filtro': status_filtro,
     })
 
