@@ -1,5 +1,3 @@
-"""Gateway unificado que consome TODOS os dados UMA VEZ."""
-
 from dataclasses import dataclass
 from typing import List, Dict, Any
 import requests
@@ -10,7 +8,6 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class ExternalData:
-    """Container para todos os dados externos."""
     discentes: List[Dict[str, Any]]
     disciplinas: List[Dict[str, Any]]
     livros: List[Dict[str, Any]]
@@ -19,18 +16,6 @@ class ExternalData:
 
 
 class UnifiedGateway:
-    """Gateway que consome TODAS as APIs UMA VEZ e fecha a porta.
-
-    Princípios SOLID aplicados:
-    - SRP: Responsável apenas por consumo inicial de dados
-    - OCP: Fechado para modificação, aberto para extensão
-
-    Princípios GRASP aplicados:
-    - Low Coupling: Isolado das outras camadas
-    - High Cohesion: Apenas operações de consumo inicial
-    - Information Expert: Sabe como buscar dados externos
-    """
-
     TIMEOUT = 5.0
 
     ENDPOINTS = {
@@ -41,20 +26,11 @@ class UnifiedGateway:
 
     @classmethod
     def consumir_todos_dados(cls) -> ExternalData:
-        """Consome TODOS os dados de TODAS as APIs.
-
-        IMPORTANTE: Deve ser chamado UMA VEZ no startup.
-        Depois disso, a "porta é fechada" - nunca mais chamar APIs.
-
-        Returns:
-            ExternalData com todos os dados ou erros
-        """
         discentes = []
         disciplinas = []
         livros = []
         erros = []
 
-        # Consumir discentes
         try:
             resp = requests.get(cls.ENDPOINTS['discentes'], timeout=cls.TIMEOUT)
             if resp.ok:
@@ -66,7 +42,6 @@ class UnifiedGateway:
             erros.append(f"Erro ao buscar discentes: {e}")
             logger.error(f"Erro discentes: {e}")
 
-        # Consumir disciplinas
         try:
             resp = requests.get(cls.ENDPOINTS['disciplinas'], timeout=cls.TIMEOUT)
             if resp.ok:
@@ -78,7 +53,6 @@ class UnifiedGateway:
             erros.append(f"Erro ao buscar disciplinas: {e}")
             logger.error(f"Erro disciplinas: {e}")
 
-        # Consumir livros
         try:
             resp = requests.get(cls.ENDPOINTS['livros'], timeout=cls.TIMEOUT)
             if resp.ok:

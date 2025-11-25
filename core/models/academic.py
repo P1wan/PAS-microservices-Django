@@ -1,8 +1,7 @@
 from django.db import models
 
-class Discente(models.Model):
-    '''Representa um discente retornado pelo microsserviço msAluno.'''
 
+class Discente(models.Model):
     id = models.IntegerField(primary_key=True)
     nome = models.CharField(max_length=200)
     curso = models.CharField(max_length=100)
@@ -14,8 +13,6 @@ class Discente(models.Model):
 
 
 class Disciplina(models.Model):
-    '''Representa uma disciplina retornada pelo microsserviço msDisciplina.'''
-
     id = models.IntegerField(primary_key=True)
     curso = models.CharField(max_length=100)
     nome = models.CharField(max_length=200)
@@ -26,8 +23,6 @@ class Disciplina(models.Model):
 
 
 class Livro(models.Model):
-    '''Representa um livro retornado pelo microsserviço de biblioteca.'''
-
     id = models.IntegerField(primary_key=True)
     titulo = models.CharField(max_length=200)
     autor = models.CharField(max_length=200)
