@@ -5,9 +5,9 @@
 {% block content %}
 <div class="card">
     <h2>
-        📚 Disciplinas Oferecidas
+        Disciplinas Oferecidas
         <a href="{% url 'core:sincronizar_dados' %}" class="btn btn-secondary btn-sm" style="float: right;">
-            🔄 Atualizar Dados
+            Atualizar Dados
         </a>
     </h2>
     <p style="color: #6c757d; margin-bottom: 20px;">
@@ -27,10 +27,10 @@
                 {% endfor %}
             </select>
         </div>
-        <button type="submit" class="btn">🔍 Filtrar</button>
+        <button type="submit" class="btn">Filtrar</button>
         {% if curso_filtro %}
         <a href="{% url 'core:disciplinas_list' %}" class="btn btn-secondary">
-            ❌ Limpar Filtro
+            Limpar Filtro
         </a>
         {% endif %}
     </form>
@@ -39,7 +39,7 @@
 
 {% if disciplinas %}
 <div class="card">
-    <h3>📋 Total: {{ disciplinas|length }} disciplina(s)</h3>
+    <h3>Total: {{ disciplinas|length }} disciplina(s)</h3>
     
     <table>
         <thead>
@@ -60,9 +60,9 @@
                 <td><strong>{{ disciplina.vagas }}</strong></td>
                 <td>
                     {% if disciplina.vagas > 0 %}
-                        <span class="badge badge-success">✅ Disponível</span>
+                        <span class="badge badge-success">Disponível</span>
                     {% else %}
-                        <span class="badge badge-danger">❌ Sem Vagas</span>
+                        <span class="badge badge-danger">Sem Vagas</span>
                     {% endif %}
                 </td>
             </tr>
@@ -72,7 +72,7 @@
 </div>
 
 <div class="card" style="background: #f8f9fa;">
-    <h3>💡 Informações</h3>
+    <h3>Informações</h3>
     <ul style="line-height: 2; color: #495057;">
         <li>As disciplinas são sincronizadas do microsserviço externo <code>msDisciplina</code></li>
         <li>Para matricular um discente, acesse a página de detalhes do discente</li>
@@ -83,10 +83,10 @@
 </div>
 {% else %}
 <div class="empty-state">
-    <p style="font-size: 1.2em;">⚠️ Nenhuma disciplina encontrada.</p>
+    <p style="font-size: 1.2em;">Nenhuma disciplina encontrada.</p>
     <p>Tente sincronizar os dados novamente.</p>
     <a href="{% url 'core:sincronizar_dados' %}" class="btn" style="margin-top: 20px;">
-        🔄 Sincronizar Dados
+        Sincronizar Dados
     </a>
 </div>
 {% endif %}

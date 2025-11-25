@@ -53,6 +53,7 @@ Abra o navegador em: **http://127.0.0.1:8000**
 
 ## Funcionamento
 
+<<<<<<< Updated upstream
 O sistema opera da seguinte forma:
 
 1. **Ao iniciar o servidor**, o banco de dados SQLite é automaticamente limpo
@@ -76,3 +77,47 @@ O sistema opera da seguinte forma:
 ## Autor
 
 Desenvolvido como trabalho acadêmico para a disciplina de Projeto de Arquitetura de Sistemas - UNIFOR.
+=======
+- `pas_gateway/` – pacote do projeto Django (settings, urls, wsgi, asgi).
+- `core/` – app principal.
+  - `models/` – modelos locais (acadêmicos e simulações).
+  - `gateways/` – integração com serviços externos.
+  - `services/` – regras de negócio e orquestração.
+  - `templates/core/` – views HTML.
+  - `cli/` – infraestrutura compartilhada pela CLI.
+  - `cli_demo.py` – atalho para executar a CLI via `python manage.py shell`.
+
+## Interface CLI
+
+Execute a interface interativa oficial (menus completos, modo demonstração, etc.):
+
+```bash
+python manage.py cli_interativo
+```
+
+Se já estiver com o shell do Django aberto, use o atalho equivalente:
+
+```python
+>>> exec(open('core/cli_demo.py').read())
+```
+
+## Funcionamento
+
+1. Ao iniciar o servidor, o cache SQLite local é limpo.
+2. Os microsserviços AWS são consumidos uma única vez no startup.
+3. Os dados ficam cacheados localmente durante a sessão.
+4. Matrículas e reservas simuladas operam apenas em memória volátil.
+5. Ao reiniciar o servidor, todo o ciclo se repete (limpa e recarrega).
+
+> O SQLite funciona como cache de sessão: nada é persistido entre reinicializações.
+
+## Referências de arquitetura
+
+- Padrão MVT do Django.
+- SOLID: SRP e DIP.
+- GRASP: Controller, Baixo Acoplamento, Alta Coesão.
+- Microsserviços consumidos:
+  - Discentes: `https://rmi6vdpsq8.execute-api.us-east-2.amazonaws.com/msAluno`
+  - Disciplinas: `https://sswfuybfs8.execute-api.us-east-2.amazonaws.com/disciplinaServico/msDisciplina`
+  - Biblioteca: `https://qiiw8bgxka.execute-api.us-east-2.amazonaws.com/acervo/biblioteca`
+>>>>>>> Stashed changes

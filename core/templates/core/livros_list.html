@@ -5,9 +5,9 @@
 {% block content %}
 <div class="card">
     <h2>
-        📖 Acervo da Biblioteca
+        Acervo da Biblioteca
         <a href="{% url 'core:sincronizar_dados' %}" class="btn btn-secondary btn-sm" style="float: right;">
-            🔄 Atualizar Dados
+            Atualizar Dados
         </a>
     </h2>
     <p style="color: #6c757d; margin-bottom: 20px;">
@@ -27,10 +27,10 @@
                 </option>
             </select>
         </div>
-        <button type="submit" class="btn">🔍 Filtrar</button>
+        <button type="submit" class="btn">Filtrar</button>
         {% if status_filtro %}
         <a href="{% url 'core:livros_list' %}" class="btn btn-secondary">
-            ❌ Limpar Filtro
+            Limpar Filtro
         </a>
         {% endif %}
     </form>
@@ -38,7 +38,7 @@
 
 {% if livros %}
 <div class="card">
-    <h3>📚 Total: {{ livros|length }} livro(s)</h3>
+    <h3>Total: {{ livros|length }} livro(s)</h3>
     
     <table>
         <thead>
@@ -59,9 +59,9 @@
                 <td>{{ livro.ano }}</td>
                 <td>
                     {% if livro.status|lower == "disponível" %}
-                        <span class="badge badge-success">✅ {{ livro.status }}</span>
+                        <span class="badge badge-success">{{ livro.status }}</span>
                     {% else %}
-                        <span class="badge badge-danger">❌ {{ livro.status }}</span>
+                        <span class="badge badge-danger">{{ livro.status }}</span>
                     {% endif %}
                 </td>
             </tr>
@@ -71,7 +71,7 @@
 </div>
 
 <div class="card" style="background: #f8f9fa;">
-    <h3>💡 Informações</h3>
+    <h3>Informações</h3>
     <ul style="line-height: 2; color: #495057;">
         <li>Os livros são sincronizados do microsserviço externo <code>biblioteca</code></li>
         <li>Para reservar um livro, acesse a página de detalhes do discente</li>
@@ -81,10 +81,10 @@
 </div>
 {% else %}
 <div class="empty-state">
-    <p style="font-size: 1.2em;">⚠️ Nenhum livro encontrado.</p>
+    <p style="font-size: 1.2em;">Nenhum livro encontrado.</p>
     <p>Tente sincronizar os dados novamente.</p>
     <a href="{% url 'core:sincronizar_dados' %}" class="btn" style="margin-top: 20px;">
-        🔄 Sincronizar Dados
+        Sincronizar Dados
     </a>
 </div>
 {% endif %}
