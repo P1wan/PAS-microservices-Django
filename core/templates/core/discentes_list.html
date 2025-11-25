@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="card">
-    <h2>👨‍🎓 Consultar Discente</h2>
+    <h2>Consultar Discente</h2>
     <p style="color: #6c757d; margin-bottom: 20px;">
         Digite o ID do discente para buscar informações no microsserviço externo.
     </p>
@@ -16,13 +16,13 @@
             <input type="number" id="discente_id" name="discente_id" 
                    placeholder="Ex: 1" required>
         </div>
-        <button type="submit" class="btn">🔍 Buscar</button>
+        <button type="submit" class="btn">Buscar</button>
     </form>
 </div>
 
 {% if discente_buscado %}
 <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-    <h3 style="color: white;">📋 Informações do Discente</h3>
+    <h3 style="color: white;">Informações do Discente</h3>
     <table style="box-shadow: none;">
         <tbody>
             <tr style="background: rgba(255,255,255,0.1);">
@@ -45,9 +45,9 @@
                 <td style="color: white; font-weight: bold; border-color: none;">Status Acadêmico</td>
                 <td style="color: white; border: none;">
                     {% if discente_buscado.status_academico|lower == "ativo" %}
-                        <span class="badge badge-success">✅ {{ discente_buscado.status_academico }}</span>
+                        <span class="badge badge-success">{{ discente_buscado.status_academico }}</span>
                     {% else %}
-                        <span class="badge badge-danger">❌ {{ discente_buscado.status_academico }}</span>
+                        <span class="badge badge-danger">{{ discente_buscado.status_academico }}</span>
                     {% endif %}
                 </td>
             </tr>
@@ -57,7 +57,7 @@
     <div style="margin-top: 20px;">
         <a href="{% url 'core:discente_detail' discente_buscado.id %}" 
            class="btn btn-secondary">
-            📊 Ver Detalhes Completos
+            Ver Detalhes Completos
         </a>
     </div>
 </div>
@@ -65,7 +65,7 @@
 
 {% if discentes %}
 <div class="card">
-    <h3>📚 Discentes Sincronizados Localmente</h3>
+    <h3>Discentes Sincronizados Localmente</h3>
     <p style="color: #6c757d; margin-bottom: 20px;">
         {{ discentes.count }} discente(s) já consultado(s) e armazenado(s) localmente.
     </p>

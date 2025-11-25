@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-    <h2 style="color: white;">👨‍🎓 {{ discente.nome }}</h2>
+    <h2 style="color: white;">{{ discente.nome }}</h2>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
         <div>
             <strong style="opacity: 0.8;">ID:</strong>
@@ -22,9 +22,9 @@
             <strong style="opacity: 0.8;">Status:</strong>
             <p style="font-size: 1.2em; margin-top: 5px;">
                 {% if discente.status_academico|lower == "ativo" %}
-                    ✅ {{ discente.status_academico }}
+                    {{ discente.status_academico }}
                 {% else %}
-                    ❌ {{ discente.status_academico }}
+                    {{ discente.status_academico }}
                 {% endif %}
             </p>
         </div>
@@ -33,7 +33,7 @@
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
     <div class="card">
-        <h3>📚 Simular Matrícula</h3>
+        <h3>Simular Matrícula</h3>
         <form method="post" action="{% url 'core:matricular' %}">
             {% csrf_token %}
             <input type="hidden" name="discente_id" value="{{ discente.id }}">
@@ -42,19 +42,17 @@
                 <input type="number" id="disciplina_id" name="disciplina_id" 
                        placeholder="Ex: 1" required>
             </div>
-            <button type="submit" class="btn btn-success" style="width: 100%;">
-                ✅ Matricular
-            </button>
+            <button type="submit" class="btn btn-success" style="width: 100%;">Confirmar Matrícula</button>
         </form>
         <p style="color: #6c757d; font-size: 0.9em; margin-top: 10px;">
-            💡 Dica: <a href="{% url 'core:disciplinas_list' %}" style="color: #667eea;">
+            Dica: <a href="{% url 'core:disciplinas_list' %}" style="color: #667eea;">
                 Ver lista de disciplinas
             </a>
         </p>
     </div>
     
     <div class="card">
-        <h3>📖 Reservar Livro</h3>
+        <h3>Reservar Livro</h3>
         <form method="post" action="{% url 'core:reservar_livro' %}">
             {% csrf_token %}
             <input type="hidden" name="discente_id" value="{{ discente.id }}">
@@ -63,12 +61,10 @@
                 <input type="number" id="livro_id" name="livro_id" 
                        placeholder="Ex: 1" required>
             </div>
-            <button type="submit" class="btn btn-success" style="width: 100%;">
-                📚 Reservar
-            </button>
+            <button type="submit" class="btn btn-success" style="width: 100%;">Reservar</button>
         </form>
         <p style="color: #6c757d; font-size: 0.9em; margin-top: 10px;">
-            💡 Dica: <a href="{% url 'core:livros_list' %}" style="color: #667eea;">
+            Dica: <a href="{% url 'core:livros_list' %}" style="color: #667eea;">
                 Ver acervo disponível
             </a>
         </p>
@@ -77,7 +73,7 @@
 
 {% if matriculas %}
 <div class="card">
-    <h3>📋 Matrículas Ativas ({{ matriculas.count }}/5)</h3>
+    <h3>Matrículas Ativas ({{ matriculas.count }}/5)</h3>
     <table>
         <thead>
             <tr>
@@ -106,7 +102,7 @@
                         <button type="submit" class="btn btn-danger" 
                                 style="padding: 6px 12px; font-size: 0.9em;"
                                 onclick="return confirm('Deseja cancelar esta matrícula?')">
-                            ❌ Cancelar
+                            Cancelar
                         </button>
                     </form>
                 </td>
@@ -118,7 +114,7 @@
 {% else %}
 <div class="card" style="background: #f8f9fa; text-align: center; padding: 40px;">
     <p style="color: #6c757d; font-size: 1.1em;">
-        📚 Nenhuma matrícula ativa no momento.
+        Nenhuma matrícula ativa no momento.
     </p>
     <p style="color: #6c757d;">
         Use o formulário acima para matricular em uma disciplina.
@@ -128,7 +124,7 @@
 
 {% if reservas %}
 <div class="card">
-    <h3>📚 Reservas Ativas ({{ reservas.count }})</h3>
+    <h3>Reservas Ativas ({{ reservas.count }})</h3>
     <table>
         <thead>
             <tr>
@@ -157,7 +153,7 @@
                         <button type="submit" class="btn btn-danger" 
                                 style="padding: 6px 12px; font-size: 0.9em;"
                                 onclick="return confirm('Deseja cancelar esta reserva?')">
-                            ❌ Cancelar
+                            Cancelar
                         </button>
                     </form>
                 </td>
@@ -169,7 +165,7 @@
 {% else %}
 <div class="card" style="background: #f8f9fa; text-align: center; padding: 40px;">
     <p style="color: #6c757d; font-size: 1.1em;">
-        📖 Nenhuma reserva ativa no momento.
+        Nenhuma reserva ativa no momento.
     </p>
     <p style="color: #6c757d;">
         Use o formulário acima para reservar um livro.
@@ -179,7 +175,7 @@
 
 <div style="margin-top: 20px;">
     <a href="{% url 'core:discentes_list' %}" class="btn btn-secondary">
-        ← Voltar para Lista de Discentes
+        Voltar para Lista de Discentes
     </a>
 </div>
 {% endblock %}

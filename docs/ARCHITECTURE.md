@@ -614,6 +614,10 @@ Acesse: `http://127.0.0.1:8000/`
 ### Interface CLI
 
 ```bash
+# CLI oficial com menus completos
+python manage.py cli_interativo
+
+# Alternativa (útil dentro do shell)
 python manage.py shell
 >>> exec(open('core/cli_demo.py').read())
 ```
