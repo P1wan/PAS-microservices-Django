@@ -657,6 +657,7 @@
             <div id="enrollments" class="tab-content">
                 <div class="section-header">
                     <h2>Gerenciar Matrículas</h2>
+                    <button class="btn btn-success" onclick="openEnrollmentModal()">Adicionar Matrícula</button>
                 </div>
 
                 {% if matriculas %}
@@ -712,6 +713,7 @@
             <div id="reservations" class="tab-content">
                 <div class="section-header">
                     <h2>Gerenciar Reservas</h2>
+                    <button class="btn btn-success" onclick="openReservationModal()">Adicionar Reserva</button>
                 </div>
 
                 {% if reservas %}
@@ -794,6 +796,78 @@
         </div>
     </div>
 
+    <div id="enrollmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adicionar Matrícula</h3>
+            </div>
+            <form method="post" action="{% url 'core:matricular' %}">
+                {% csrf_token %}
+                <input type="hidden" name="redirect" value="admin_dashboard">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="enrollDiscente">Estudante</label>
+                        <select id="enrollDiscente" name="discente_id" required>
+                            <option value="">Selecione um estudante...</option>
+                            {% for discente in discentes %}
+                                <option value="{{ discente.id }}">{{ discente.id }} - {{ discente.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="enrollDisciplina">Disciplina</label>
+                        <select id="enrollDisciplina" name="disciplina_id" required>
+                            <option value="">Selecione uma disciplina...</option>
+                            {% for disciplina in disciplinas %}
+                                <option value="{{ disciplina.id }}">{{ disciplina.id }} - {{ disciplina.nome }} ({{ disciplina.vagas }} vagas)</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeEnrollmentModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Confirmar Matrícula</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="reservationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adicionar Reserva</h3>
+            </div>
+            <form method="post" action="{% url 'core:reservar_livro' %}">
+                {% csrf_token %}
+                <input type="hidden" name="redirect" value="admin_dashboard">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="reserveDiscente">Estudante</label>
+                        <select id="reserveDiscente" name="discente_id" required>
+                            <option value="">Selecione um estudante...</option>
+                            {% for discente in discentes %}
+                                <option value="{{ discente.id }}">{{ discente.id }} - {{ discente.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="reserveLivro">Livro</label>
+                        <select id="reserveLivro" name="livro_id" required>
+                            <option value="">Selecione um livro...</option>
+                            {% for livro in livros %}
+                                <option value="{{ livro.id }}">{{ livro.id }} - {{ livro.titulo }} ({{ livro.status }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeReservationModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Confirmar Reserva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         function switchTab(event, tabId) {
             document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
@@ -830,6 +904,34 @@
                 tr[i].style.display = found ? '' : 'none';
             }
         }
+
+        function openEnrollmentModal() {
+            document.getElementById('enrollmentModal').classList.add('active');
+        }
+
+        function closeEnrollmentModal() {
+            document.getElementById('enrollmentModal').classList.remove('active');
+        }
+
+        function openReservationModal() {
+            document.getElementById('reservationModal').classList.add('active');
+        }
+
+        function closeReservationModal() {
+            document.getElementById('reservationModal').classList.remove('active');
+        }
+
+        window.addEventListener('click', (event) => {
+            const enrollmentModal = document.getElementById('enrollmentModal');
+            const reservationModal = document.getElementById('reservationModal');
+
+            if (event.target === enrollmentModal) {
+                closeEnrollmentModal();
+            }
+            if (event.target === reservationModal) {
+                closeReservationModal();
+            }
+        });
 
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);

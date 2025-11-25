@@ -87,21 +87,13 @@ class PasCli:
     def run(self) -> None:
         self.print_header()
 
-        reinicializar = self._ask(
-            "\n  Deseja reinicializar os dados antes de começar? (S/n): "
-        ).strip().lower()
-
-        if reinicializar in ("", "s", "sim"):
-            self.inicializar_sistema(forcar=True)
+        self.print_box("Inicializando sistema - Limpando e coletando dados da API", width=70)
+        self.inicializar_sistema(forcar=True)
 
         if not Discente.objects.exists():
-            self.print_box("AVISO: Sistema não inicializado!", border_char="!", width=70)
-            resposta = self._ask("\n  Deseja inicializar agora? (s/n): ")
-            if resposta.lower() == "s":
-                self.inicializar_sistema(forcar=True)
-            else:
-                self._out("\n  Sistema requer inicialização. Encerrando...\n")
-                return
+            self.print_box("ERRO: Falha na inicializacao do sistema!", border_char="!", width=70)
+            self._out("\n  Sistema nao pode ser inicializado. Encerrando...\n")
+            return
 
         self.menu_principal()
 
@@ -174,7 +166,24 @@ class PasCli:
                 break
 
     def _encerrar(self) -> None:
-        self.print_box("Encerrando sistema. Até logo!", width=70)
+        self.print_box("Limpando dados da sessao...", width=70)
+
+        from core.models import (
+            Discente, Disciplina, Livro,
+            Matricula, MatriculaDisciplina, ReservaLivro,
+            MatriculaSimulada, ReservaSimulada
+        )
+
+        MatriculaDisciplina.objects.all().delete()
+        Matricula.objects.all().delete()
+        ReservaLivro.objects.all().delete()
+        Discente.objects.all().delete()
+        Disciplina.objects.all().delete()
+        Livro.objects.all().delete()
+        MatriculaSimulada.objects.all().delete()
+        ReservaSimulada.objects.all().delete()
+
+        self.print_box("Encerrando sistema. Ate logo!", width=70)
         self._out("")
 
     # ------------------------------------------------------------------ #
