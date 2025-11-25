@@ -147,7 +147,6 @@ def matricular(request):
         discente = Discente.objects.get(id=int(discente_id))
         disciplina = Disciplina.objects.get(id=int(disciplina_id))
 
-        # Usa o novo service de matrícula
         sucesso, mensagem = EnrollmentServiceV2.adicionar_disciplina(discente, disciplina)
 
         if sucesso:
@@ -162,9 +161,10 @@ def matricular(request):
     except Exception as e:
         messages.error(request, f"Erro inesperado: {str(e)}")
 
-    # Redirecionar baseado no parâmetro
     if redirect_to == 'student_dashboard':
         return redirect('core:student_dashboard', discente_id=discente_id)
+    elif redirect_to == 'admin_dashboard':
+        return redirect('core:admin_dashboard')
     return redirect('core:discente_detail', discente_id=discente_id)
 
 
@@ -225,7 +225,6 @@ def reservar_livro(request):
         discente = Discente.objects.get(id=int(discente_id))
         livro = Livro.objects.get(id=int(livro_id))
 
-        # Usa o novo service de reserva
         sucesso, mensagem = ReservationServiceV2.reservar(discente, livro)
 
         if sucesso:
@@ -240,9 +239,10 @@ def reservar_livro(request):
     except Exception as e:
         messages.error(request, f"Erro inesperado: {str(e)}")
 
-    # Redirecionar baseado no parâmetro
     if redirect_to == 'student_dashboard':
         return redirect('core:student_dashboard', discente_id=discente_id)
+    elif redirect_to == 'admin_dashboard':
+        return redirect('core:admin_dashboard')
     return redirect('core:discente_detail', discente_id=discente_id)
 
 

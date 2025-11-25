@@ -401,25 +401,46 @@ disciplina.save()
 
 3. Modificar `ReservationService` de forma similar para livros
 
-### 2. Persistência Local
+### 2. Persistência Local e Volatilidade de Dados
 
-**Decisão:** SQLite para persistir simulações
+**Decisão:** SQLite como cache volátil de sessão
 
-**Vantagens:**
-- Simulações sobrevivem entre execuções
-- Bônus de pontuação no projeto
-- Não requer servidor externo
+**Estratégia de Volatilidade:**
+O sistema implementa uma estratégia de dados voláteis para garantir que sempre trabalhe com informações atualizadas da API:
 
-**Dados persistidos:**
-- Discentes (cache)
-- Disciplinas (cache)
-- Livros (cache)
-- MatriculaSimulada (simulações)
-- ReservaSimulada (simulações)
+1. **Inicialização do Servidor Web (`runserver`):**
+   - `core/apps.py` detecta o início do servidor
+   - Deleta TODOS os dados do SQLite (discentes, disciplinas, livros, matrículas, reservas)
+   - Sincroniza automaticamente com os microsserviços AWS
+   - Popula o cache local com dados frescos
+
+2. **Inicialização da CLI (`cli_interativo`):**
+   - Limpa automaticamente todos os dados ao iniciar
+   - Coleta novos dados da API
+   - Não solicita confirmação do usuário
+
+3. **Encerramento da CLI:**
+   - Deleta automaticamente todos os dados ao sair
+   - Garante que não permaneçam dados entre sessões
+
+**Vantagens desta abordagem:**
+- Garante dados sempre atualizados da API
+- Evita inconsistências de IDs dinâmicos dos microsserviços
+- Simula comportamento de cache em memória usando SQLite
+- Cumpre requisito de volatilidade das simulações
+- Bônus de pontuação por usar banco de dados
+
+**Dados no cache local:**
+- Discentes (cache volátil)
+- Disciplinas (cache volátil)
+- Livros (cache volátil)
+- Matrículas (simulações voláteis)
+- Reservas (simulações voláteis)
 
 **Dados NÃO persistidos nos microsserviços:**
-- As simulações vivem apenas localmente
+- Todas as simulações vivem apenas localmente
 - Microsserviços permanecem inalterados
+- Dados não sobrevivem entre reinicializações
 
 ### 3. Tratamento de Erros
 
@@ -611,16 +632,47 @@ python manage.py runserver
 
 Acesse: `http://127.0.0.1:8000/`
 
+O sistema oferece duas interfaces web principais:
+
+1. **Portal Principal** - Tela de seleção entre interface de Estudante e Administrador
+2. **Dashboard do Estudante** - Interface personalizada para operações do estudante (matrícula, reservas)
+3. **Dashboard Administrativo** - Interface completa de gerenciamento com todas as funcionalidades da CLI
+
+#### Dashboard Administrativo
+
+Acesso: `http://127.0.0.1:8000/admin/`
+
+O Dashboard Administrativo oferece uma interface gráfica interativa que replica todas as funcionalidades da CLI:
+
+**Funcionalidades disponíveis:**
+- Visualização de estatísticas gerais do sistema
+- Listagem e busca de estudantes
+- Listagem e busca de disciplinas com contador de matriculados
+- Listagem e busca de livros do acervo
+- Gerenciamento completo de matrículas (adicionar/cancelar)
+- Gerenciamento completo de reservas (adicionar/cancelar)
+- Sincronização manual de dados da API
+
+**Diferencial da interface administrativa:**
+- Interface visual moderna com tabs organizadas
+- Busca em tempo real nas listagens
+- Modais para adicionar matrículas e reservas
+- Feedback visual com mensagens de sucesso/erro
+- Visualização de estatísticas em tempo real
+
 ### Interface CLI
 
 ```bash
-# CLI oficial com menus completos
 python manage.py cli_interativo
-
-# Alternativa (útil dentro do shell)
-python manage.py shell
->>> exec(open('core/cli_demo.py').read())
 ```
+
+A CLI oferece uma interface interativa por linha de comando com menus completos.
+
+**Comportamento de dados na CLI:**
+- A CLI sempre limpa todos os dados ao iniciar e coleta novos dados da API
+- Ao sair da CLI, todos os dados são deletados automaticamente
+- Isso garante que cada sessão da CLI trabalhe com dados frescos da API
+- Não é necessário confirmar a limpeza de dados - o processo é automático
 
 ## Testes
 
